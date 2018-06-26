@@ -19,7 +19,7 @@ class Forecast extends Component {
 	}
 
 	componentWillMount() {
-		axios.get("https://api.openweathermap.org/data/2.5/forecast?lat=37.5407246&lon=-77.4360481&APPID=8c282803ea9759bc4e1503e68fd68174")
+		axios.get("https://api.openweathermap.org/data/2.5/forecast?lat=37.5407246&lon=-77.4360481&APPID=")
 			.then(response => {
 				console.log(response);
 				let weather = response.data.list;

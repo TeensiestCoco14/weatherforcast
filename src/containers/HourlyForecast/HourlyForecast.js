@@ -19,7 +19,7 @@ class HourlyForecast extends Component {
 	}
 
 	componentDidMount() {
-		axios.get("https://api.openweathermap.org/data/2.5/forecast?lat=37.5407&lon=-77.4360&APPID=8c282803ea9759bc4e1503e68fd68174")
+		axios.get("https://api.openweathermap.org/data/2.5/forecast?lat=37.5407&lon=-77.4360&APPID=")
 			.then(response => {
 				let weather = response.data.list;
 				let day = null;
