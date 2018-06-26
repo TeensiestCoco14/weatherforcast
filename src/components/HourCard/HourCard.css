@@ -1,0 +1,7 @@
+.Hour {
+	max-width: 15%;
+	border: 1px solid black;
+	display: inline-block;
+	height: 250px;
+	margin: 25px;
+}
