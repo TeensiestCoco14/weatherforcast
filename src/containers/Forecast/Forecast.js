@@ -16,18 +16,23 @@ class Forecast extends Component {
 	
 	state = {
 		days: null,
+		location: null
 	}
 
-	componentWillMount() {
-		axios.get("https://api.openweathermap.org/data/2.5/forecast?lat=37.5407246&lon=-77.4360481&APPID=")
+	componentDidMount() {
+		this.getLocation();
+	}
+
+	componentDidUpdate() {
+		if (!this.state.days && this.state.lat && this.state.long) {
+			axios.get("https://api.openweathermap.org/data/2.5/forecast?lat=" + this.state.lat + "&lon=" + this.state.long + "&APPID=8c282803ea9759bc4e1503e68fd68174")
 			.then(response => {
-				console.log(response);
 				let weather = response.data.list;
 				let day = weather[0].dt_txt.slice(0,10);
 				let forecast = [];
 				let dailyForecast = [];
 				for (let i = 0; i < weather.length; ++i) {
-					if(day == weather[i].dt_txt.slice(0, 10)) {
+					if(day === weather[i].dt_txt.slice(0, 10)) {
 						dailyForecast.push(weather[i]);
 					} else {
 						day = weather[i].dt_txt.slice(0,10);
@@ -61,14 +66,33 @@ class Forecast extends Component {
 							case 6:
 								date = "Saturday";
 								break;
+							default: return date;
 						}
 						forecast[i][j].dt_txt = date;
 					}
 				}
 				this.setState({days: forecast});
-				console.log(this.state);
 			});
+		}
 	}
+
+	getLocation = () => {
+		if (navigator.geolocation) {
+			navigator.geolocation.getCurrentPosition(this.setPosition);
+		} else {
+			alert("Location not supported");
+		}
+	}
+
+	setPosition = (position) => {
+		let lat = position.coords.latitude;
+		let long = position.coords.longitude;
+		this.setState({
+			lat: lat,
+			long: long
+		});
+	}
+
 
 	findMin = (day) => {
 		let min = day[0].main.temp_min;
@@ -100,24 +124,24 @@ class Forecast extends Component {
 		if (this.state.days) {
 			days = this.state.days.map(day => {
 				let icon = null;
-				if(day[0].weather[0].main == "Clear") {
+				if(day[0].weather[0].main === "Clear") {
 					icon = sunny;
-				}else if (day[0].weather[0].main == "Rain") {
-					if(day[0].weather[0].description == "light rain") {
+				}else if (day[0].weather[0].main === "Rain") {
+					if(day[0].weather[0].description === "light rain") {
 						icon = lightRain;
 					}else {
 						icon = heavyRain;
 					}
-				}else if (day[0].weather[0].main == "Snow") {
-					if(day[0].weather[0].description == "sleet" || day[0].weather[0].description == "shower sleet") {
+				}else if (day[0].weather[0].main === "Snow") {
+					if(day[0].weather[0].description === "sleet" || day[0].weather[0].description === "shower sleet") {
 						icon = sleet;
 					}else {
 						icon = snow
 					}
-				}else if (day[0].weather[0].main == "Thunderstorm") {
+				}else if (day[0].weather[0].main === "Thunderstorm") {
 					icon = thunderstorms;
-				}else if (day[0].weather[0].main == "Clouds") {
-					if(day[0].weather[0].description == "few clouds" || day[0].weather[0].description == "scattered clouds") {
+				}else if (day[0].weather[0].main === "Clouds") {
+					if(day[0].weather[0].description === "few clouds" || day[0].weather[0].description === "scattered clouds") {
 						icon = partlyCloudy;
 					} else {
 						icon = cloudy;
